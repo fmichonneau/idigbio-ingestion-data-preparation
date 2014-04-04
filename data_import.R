@@ -7,6 +7,28 @@ guid <- guidFull[, c(1, 17)]
 names(guid) <- c("idigbio-guid", "ufid")
 
 
+extensionToUpper <- function(path) {
+    lF <- list.files(path=path, pattern="\\.[a-z]{3,}$", full.names=TRUE)
+    splitFileName <- strsplit(lF, "\\.")
+    extToUp <- lapply(splitFileName, function(x) {
+        x[length(x)] <- toupper(x[length(x)])
+        x
+    })
+    newNm <- sapply(extToUp, function(x) paste0(x, collapse="."))
+    test <- apply(cbind(lF, newNm), 1, function(x) file.rename(x[1], x[2]))
+    invisible(all(test))
+}
+
+changeSeparator <- function(path, from="_", to="-") {
+    lF <- list.files(path=path,
+                     pattern=paste(".+", from, "[0-9]+a?\\.[A-Z]{3,}$", sep=""),
+                     full.names=TRUE)
+    newNm <- gsub(paste("(.+/)(.+)", from, "([0-9]+a?\\.[A-Z]{3,}$)", sep=""),
+                  paste("\\1\\2", to, "\\3", sep=""), lF)
+
+    test
+}
+
 checkPhotoFolder <- function(path, quiet=FALSE) {
     lF <- list.files(path=path, pattern="\\.JPG$")
     if (!quiet) message("There were ", length(lF), " images in ", path, ".")
@@ -35,28 +57,6 @@ checkPhotoFolder <- function(path, quiet=FALSE) {
     if (!quiet) message("All good! You can now run the iDigBio appliance",
                         " to generate the CSV file.")
     invisible(TRUE)
-}
-
-extensionToUpper <- function(path) {
-    lF <- list.files(path=path, pattern="\\.[a-z]{3,}$", full.names=TRUE)
-    splitFileName <- strsplit(lF, "\\.")
-    extToUp <- lapply(splitFileName, function(x) {
-        x[length(x)] <- toupper(x[length(x)])
-        x
-    })
-    newNm <- sapply(extToUp, function(x) paste0(x, collapse="."))
-    test <- apply(cbind(lF, newNm), 1, function(x) file.rename(x[1], x[2]))
-    invisible(all(test))
-}
-
-changeSeparator <- function(path, from="_", to="-") {
-    lF <- list.files(path=path,
-                     pattern=paste(".+", from, "[0-9]+a?\\.[A-Z]{3,}$", sep=""),
-                     full.names=TRUE)
-    newNm <- gsub(paste("(.+/)(.+)", from, "([0-9]+a?\\.[A-Z]{3,}$)", sep=""),
-                  paste("\\1\\2", to, "\\3", sep=""), lF)
-
-    test
 }
 
 checkPhotoInfoFile <- function(file, quiet=FALSE) {
@@ -135,7 +135,6 @@ checkPhotoInfoFile <- function(file, quiet=FALSE) {
     }
 }
 
-checkPhotoInfoFile(file="dNORS/dNORS-photoInfo.csv")
 
 matchGUID <- function(toMatch, photoDB, ufDB, guid, file, useFieldNumber=FALSE) {
     ## get the photo number
@@ -189,9 +188,15 @@ matchGUID <- function(toMatch, photoDB, ufDB, guid, file, useFieldNumber=FALSE) 
     TRUE
 }
 
+
+checkPhotoFolder(path="dNORS/dNORS-photoInfo.csv")
+
+checkPhotoInfoFile(file="dNORS/dNORS-photoInfo.csv")
+
 toMatch <- read.csv(file="dNORS/dNORS-toBeMatched.csv",
                     stringsAsFactors=FALSE, check.names=FALSE)
 photoDB <- read.csv(file="dNORS/dNORS-photoInfo.csv",
                     stringsAsFactors=FALSE, check.names=FALSE)
 
 matchGUID(toMatch, photoDB, ufDB, guid, file="dNORS-matched.csv")
+
