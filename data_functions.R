@@ -7,18 +7,36 @@ extensionToUpper <- function(path) {
         x
     })
     newNm <- sapply(extToUp, function(x) paste0(x, collapse="."))
-    test <- apply(cbind(lF, newNm), 1, function(x) file.rename(x[1], x[2]))
-    invisible(all(test))
+    if (identical(lF, newNm)) {
+        message("nothing to be done...")
+        return(NULL)
+    }
+    else {
+        test <- apply(cbind(lF, newNm), 1, function(x) file.rename(x[1], x[2]))
+        if (!all(test)) warning("Something went wrong: ", sum(!test), " files were not renamed.")
+        invisible(all(test))
+    }
 }
 
 changeSeparator <- function(path, from="_", to="-") {
     lF <- list.files(path=path,
                      pattern=paste(".+", from, "[0-9]+a?\\.[A-Z]{3,}$", sep=""),
                      full.names=TRUE)
+    if (length(lF) == 0) {
+        stop("no files found, check that extension if UPPERCASE.")
+    }
     newNm <- gsub(paste("(.+/)(.+)", from, "([0-9]+a?\\.[A-Z]{3,}$)", sep=""),
                   paste("\\1\\2", to, "\\3", sep=""), lF)
 
-    test
+    if (identical(lF, newNm)) {
+        message("nothing to be done...")
+        return(NULL)
+    }
+    else {
+        test <- apply(cbind(lF, newNm), 1, function(x) file.rename(x[1], x[2]))
+        if (!all(test)) warning("Something went wrong: ", sum(!test), " files were not renamed.")
+        invisible(all(test))
+    }
 }
 
 checkPhotoFolder <- function(path, quiet=FALSE) {
@@ -32,7 +50,7 @@ checkPhotoFolder <- function(path, quiet=FALSE) {
     photoName <- strsplit(lF, "-")
     prefixes <- sapply(photoName, function(x) x[1])
     uniqPref <- unique(prefixes)
-    if (!quiet) message("There is ", length(uniqPref), " prefix (problem if not 1)")
+    if (!quiet) message("Number of prefixes: ", length(uniqPref), " (problem if not 1)")
     if (length(uniqPref) != 1) {
         stop("The prefix listed for the photo file name is not ",
              "formatted correctly")
