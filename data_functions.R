@@ -13,7 +13,10 @@ extensionToUpper <- function(path) {
     }
     else {
         test <- apply(cbind(lF, newNm), 1, function(x) file.rename(x[1], x[2]))
-        if (!all(test)) warning("Something went wrong: ", sum(!test), " files were not renamed.")
+        if (!all(test)) {
+            warning("Something went wrong: ", sum(!test),
+                    " files were not renamed.")
+        }
         invisible(all(test))
     }
 }

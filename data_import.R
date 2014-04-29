@@ -1,4 +1,5 @@
 setwd("~/Documents/iDigBio/PhotoImport")
+source("~/Documents/iDigBio/idigbio-ingestion-data-preparation/data_functions.R")
 ufdb <- read.csv(file="allUF.csv", stringsAsFactors=FALSE)
 load("guidm.RData")
 guidFull <- read.csv(file="occurrence.txt", row.names=NULL,
@@ -9,7 +10,7 @@ names(guid) <- c("idigbio-guid", "ufid")
 ### ------ for dNORS (Northern Red Sea)
 
 ###    *********  Not yet finished *********
-
+###    missing iDigBio GUID for these specimens
 checkPhotoFolder(path="~/Photos/tmp/dNORS_2013_1s")
 checkPhotoInfoFile(file="dNORS/dNORS-photoInfo.csv")
 
@@ -50,3 +51,18 @@ photoDB <- read.csv(file="dMOO12/dMOO12-photoInfo.csv",
 photoDB <- subset(photoDB, subset=photo_quality == "1")
 
 matchGUID(toMatch, photoDB, ufDB, guid, file="dMOO12-matched.csv")
+
+### ----- for dMOO10 (Moorea 2010)
+
+extensionToUpper("~/Photos/tmp/dMOO10")
+checkPhotoFolder(path="~/Photos/tmp/dMOO10")
+
+checkPhotoInfoFile(file="dMOO10/dMOO10-photoInfo.csv")
+
+toMatch <- read.csv(file="dMOO10/dMOO10-toBeMatched.csv",
+                    stringsAsFactors=FALSE, check.names=FALSE)
+photoDB <- read.csv(file="dMOO10/dMOO10-photoInfo.csv",
+                    stringsAsFactors=FALSE, check.names=FALSE)
+photoDB <- subset(photoDB, subset= photo_quality == "1")
+
+matchGUID(toMatch, photoDB, ufDB, guid, file="dMOO10-matched.csv")
