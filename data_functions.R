@@ -59,7 +59,7 @@ checkPhotoFolder <- function(path, quiet=FALSE) {
              "formatted correctly")
     }
     numbers <- sapply(photoName, function(x) x[2])
-    lNums <- grep("\\b[0-9]{5}a?\\b", numbers)
+    lNums <- grep("\\b[0-9]{5}(a|b)?\\b", numbers)
     if (!quiet) message("There are ", length(lNums), " correctly numbered photo.")
     if (!quiet) message("There are ", length(lF), " photos in your folder.")
     if (length(lNums) != length(lF)) {
@@ -118,7 +118,7 @@ checkPhotoInfoFile <- function(file, quiet=FALSE) {
     else {
         stop("The prefix listed for the photo file name is not ",
              "formatted correctly")
-    }    
+    }
     if (!quiet) message("The photo prefix is ", uniqPref, ". Problem if not: ", prefix)
     if (uniqPref == prefix) {
         conditions[5] <- TRUE
@@ -131,7 +131,7 @@ checkPhotoInfoFile <- function(file, quiet=FALSE) {
     if (!quiet) message("There are ", length(lNums), " correctly numbered photo.")
     if (!quiet) message("There are ", nrow(photoInfo), " photos in your dataset.")
     if (length(lNums) == nrow(photoInfo)) {
-        conditions[6] <- TRUE        
+        conditions[6] <- TRUE
     }
     else {
         stop("The number of correctly numbered pictures is not the ",
@@ -158,7 +158,7 @@ matchGUID <- function(toMatch, photoDB, ufDB, guid, file, useFieldNumber=FALSE) 
         fNm
     }
     prefixFile <- unlist(strsplit(file, "-"))[1]
-    selectedFile <- paste(prefixFile, "-selected.csv", sep="")   
+    selectedFile <- paste(prefixFile, "-selected.csv", sep="")
     photoNm <- sapply(toMatch$"idigbio:OriginalFileName", getPhotoNb)
     toKeep <-  photoNm[photoNm %in% photoDB$photo_number]
     if (length(toKeep) == 0)
