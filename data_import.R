@@ -127,3 +127,14 @@ toMatch <- read.csv(file = "FHL/dFHL-toBeMatched.csv", stringsAsFactors = FALSE,
 photoDB <- read.csv(file = "FHL/dFHL-photoInfo.csv",  stringsAsFactors = FALSE,
                     check.names = FALSE)
 matchGUID(toMatch,  photoDB,  ufdb,  guid, file = "FHL/dFHL-matched.csv")
+
+### ------ for GUOK
+### ------ done on 2015-08-26
+### reimport to figure out mismatches
+### only 1 difference, sent email to Alex to see what is the best way of fixing it
+
+toMatch <- read.csv(file = "GUOK/dGUOK10-selected_20150206.csv", stringsAsFactors = FALSE,
+                    check.names = FALSE)
+photoDB <- read.csv(file = "GUOK/dGUOK10-photoInfo_20150206.csv", stringsAsFactors = FALSE,
+                    check.names = FALSE)
+matchGUID(toMatch, photoDB, ufdb, guid, file = "GUOK/dGUOK10-matched_20150826.csv")
